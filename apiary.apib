@@ -1,80 +1,131 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: http://api.gtdtodoapi.com
 
-# exchangeapi
+# API Exchange
+This is an example API, written as a companion to a blog post at SendGrid.com
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+## Folder [/folder{id}]
+A single Folder object, it represents a single folder.
 
-## Questions Collection [/questions]
+Required attributes: 
 
-### List All Questions [GET]
+- `id`          Automatically assigned
+- `name`
+- `description`
 
-+ Response 200 (application/json)
+Optional attributes:
+- `parent`      ID of folder that is the parent. Set to 0 if no parent
+- `meta`        A catch-all attribute to add custom features
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
++ Parameters
+    + id (required, int) ... Unique folder ID in the form of an integer
 
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
-
-+ Request (application/json)
-
-        {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
-        }
-
-+ Response 201 (application/json)
-
-    + Headers
-
-            Location: /questions/2
++ Model (application/hal+json)
 
     + Body
 
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
+                "id": 1,
+                "name": "Health",
+                "description": "This represents projects that are related to health"
+                "parent": 0,
+                "meta": "NULL"
+            }
+            
+## Retrieve a single Folder [GET]
+
++ Response 200 (application/json)
+
+    [Folder][]
+    
++ Response 404 (application/json)
+
+        { 
+            "error": "Resource not found" 
+        }
+    
+### Edit a Folder [PATCH]
+
++ Request (application/json)
+
+        {
+            "description": "A collection of health related projects",
+        }
+
++ Response 200
+    
+    [Folder][]
+
++ Response 404
+
+        { 
+            "error": "Resource not found"
+        }
+
++ Response 400
+
+        { 
+            "error": "Resource modification failed"
+        }
+
+## Delete a Folder [DELETE]
+
++ Response 200
+
+        { 
+            "result": True
+        }
+
+## Create a Folder [POST]
+
++ Request (application/json)
+
+        {
+            "name": "Diet",
+            "description": "A collection of projects related to Diet",
+            "parent": 1
+        }
+
++ Response 201
+
+    [Folder][]
+    
++ Response 400
+
+        { 
+            "error": "Resource modification failed"
+        }
+
+# Folder Collection [/folder]
+Get all of the Folders.
+
++ Model (application/hal+json)
+
+    + Body
+
+            {
+                "folders": [
                     {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
+                        "id": 1,
+                        "name": "Health",
+                        "description": "This represents projects that are related to health"
+                        "parent": 0,
+                        "meta": "NULL"
+                    },
+                    {
+                        "id": 1,
+                        "name": "Diet",
+                        "description": "A collection of projects related to Diet",
+                        "parent": 1,
+                        "meta": "NULL"
                     }
                 ]
             }
+
+
+
+## List all Folders [GET]
+
++ Response 200
+
+    [Folder Collection][]
